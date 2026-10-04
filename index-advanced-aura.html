@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Viral1s Template Test</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: #0b0b0f;
+      color: #fff;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    button,
+    input { font: inherit; }
+
+    /* =========================
+       REAL 0 -> 100 BOOT SCREEN
+    ========================== */
+
+    .boot-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(118,92,255,.14), transparent 34%),
+        #08080c;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+
+    .boot-loader.is-done {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .boot-card {
+      width: min(100%, 380px);
+      text-align: center;
+    }
+
+    .boot-logo {
+      width: 62px;
+      height: 62px;
+      margin: 0 auto 18px;
+      display: grid;
+      place-items: center;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #765cff, #527cff);
+      box-shadow: 0 14px 40px rgba(91, 91, 255, .28);
+      font-weight: 950;
+      font-size: 22px;
+      letter-spacing: -.04em;
+    }
+
+    .boot-title {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .boot-copy {
+      margin: 8px 0 18px;
+      color: #8f8f9c;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .boot-percent {
+      margin-bottom: 8px;
+      font-size: 36px;
+      line-height: 1;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .boot-track {
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #1d1d25;
+      border: 1px solid #292934;
+    }
+
+    .boot-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #765cff, #527cff);
+      transition: width .12s linear;
+    }
+
+    .boot-status {
+      min-height: 18px;
+      margin: 10px 0 0;
+      color: #777784;
+      font-size: 11px;
+    }
+
+    .boot-retry {
+      display: none;
+      margin: 14px auto 0;
+      padding: 10px 14px;
+      border: 0;
+      border-radius: 12px;
+      background: #fff;
+      color: #0b0b0f;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    /* =========================
+       APP
+    ========================== */
+
+    .app {
+      width: min(100%, 1080px);
+      margin: 0 auto;
+      padding: 16px;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .35s ease, transform .35s ease;
+    }
+
+    body.is-ready .app {
+      opacity: 1;
+      transform: none;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .title {
+      min-width: 0;
+    }
+
+    .title strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.15;
+    }
+
+    .title span {
+      display: block;
+      margin-top: 4px;
+      color: #9ca3af;
+      font-size: 12px;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      padding: 7px 10px;
+      border: 1px solid #2a2a34;
+      border-radius: 999px;
+      color: #c4b5fd;
+      background: #16161d;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .workspace {
+      display: grid;
+      gap: 16px;
+    }
+
+    .player-column {
+      min-width: 0;
+    }
+
+    .reel-frame {
+      width: min(100%, 390px);
+      margin: 0 auto;
+      aspect-ratio: 9 / 16;
+      position: relative;
+      overflow: hidden;
+      background: #000;
+      border-radius: 24px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.38);
+    }
+
+    #reelCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+
+    .player-controls {
+      width: min(100%, 390px);
+      margin: 12px auto 0;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .play-btn {
+      width: 46px;
+      height: 46px;
+      border: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #765cff, #527cff);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(82,124,255,.22);
+    }
+
+    .progress {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: #24242d;
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #765cff, #527cff);
+    }
+
+    .time {
+      min-width: 72px;
+      text-align: right;
+      color: #a7a7b2;
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hint {
+      width: min(100%, 390px);
+      margin: 10px auto 0;
+      text-align: center;
+      color: #777784;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .panel {
+      padding: 14px;
+      border: 1px solid #272731;
+      border-radius: 20px;
+      background: #131319;
+    }
+
+    .panel h2 {
+      margin: 0 0 4px;
+      font-size: 16px;
+    }
+
+    .panel-copy {
+      margin: 0 0 14px;
+      color: #9999a5;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .photo-inputs {
+      display: grid;
+      gap: 10px;
+    }
+
+    .photo-input {
+      position: relative;
+      display: grid;
+      grid-template-columns: 46px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      min-height: 64px;
+      padding: 9px 10px;
+      overflow: hidden;
+      border: 1px solid #2a2a34;
+      border-radius: 15px;
+      background: #191920;
+      cursor: pointer;
+    }
+
+    .photo-input input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .thumb {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 11px;
+      background: #24242d;
+      color: #b7b7c2;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .photo-copy {
+      min-width: 0;
+    }
+
+    .photo-copy strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .photo-copy span {
+      display: block;
+      margin-top: 3px;
+      overflow: hidden;
+      color: #8e8e99;
+      font-size: 11px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .replace {
+      color: #a99aff;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .hidden-media {
+      position: fixed;
+      width: 1px;
+      height: 1px;
+      left: -9999px;
+      top: -9999px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @media (min-width: 820px) {
+      .app { padding: 24px; }
+
+      .workspace {
+        grid-template-columns: minmax(360px, 460px) minmax(320px, 1fr);
+        align-items: center;
+        gap: 28px;
+      }
+
+      .reel-frame,
+      .player-controls,
+      .hint {
+        width: 100%;
+      }
+
+      .panel { padding: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="boot-loader" id="bootLoader">
+    <div class="boot-card">
+      <div class="boot-logo">V1</div>
+      <h1 class="boot-title">Loading your template</h1>
+      <p class="boot-copy">Preparing video, music and frame effects before opening the editor.</p>
+      <div class="boot-percent" id="bootPercent">0%</div>
+      <div class="boot-track">
+        <div class="boot-fill" id="bootFill"></div>
+      </div>
+      <p class="boot-status" id="bootStatus">Starting…</p>
+      <button class="boot-retry" id="bootRetry" type="button">Retry</button>
+    </div>
+  </div>
+
+  <main class="app" id="app" aria-hidden="true">
+    <header class="topbar">
+      <div class="title">
+        <strong>Aura Photo Trend</strong>
+        <span>Template 01 · 3 photos · 9:16</span>
+      </div>
+      <div class="badge">FREE · NO WATERMARK</div>
+    </header>
+
+    <section class="workspace">
+      <div class="player-column">
+        <div class="reel-frame">
+          <canvas id="reelCanvas" width="540" height="960"></canvas>
+        </div>
+
+        <div class="player-controls">
+          <button id="playBtn" class="play-btn" type="button" aria-label="Play template">▶</button>
+          <div class="progress">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+          <div class="time">
+            <span id="currentTime">0:00</span> / <span id="totalTime">0:13</span>
+          </div>
+        </div>
+
+        <p class="hint">
+          Preview works before uploading anything. Empty slots use built-in demo cards.
+        </p>
+      </div>
+
+      <aside class="panel">
+        <h2>Replace photos</h2>
+        <p class="panel-copy">Add your photos. Any empty slot keeps the demo image so you can preview the full style first.</p>
+
+        <div class="photo-inputs">
+          <label class="photo-input">
+            <input id="photoInput1" type="file" accept="image/*">
+            <span class="thumb"><span id="thumbText1">1</span><img id="thumbImage1" alt=""></span>
+            <span class="photo-copy"><strong>Photo 1</strong><span id="fileName1">Demo placeholder</span></span>
+            <span class="replace">Choose</span>
+          </label>
+
+          <label class="photo-input">
+            <input id="photoInput2" type="file" accept="image/*">
+            <span class="thumb"><span id="thumbText2">2</span><img id="thumbImage2" alt=""></span>
+            <span class="photo-copy"><strong>Photo 2</strong><span id="fileName2">Demo placeholder</span></span>
+            <span class="replace">Choose</span>
+          </label>
+
+          <label class="photo-input">
+            <input id="photoInput3" type="file" accept="image/*">
+            <span class="thumb"><span id="thumbText3">3</span><img id="thumbImage3" alt=""></span>
+            <span class="photo-copy"><strong>Photo 3</strong><span id="fileName3">Demo placeholder</span></span>
+            <span class="replace">Choose</span>
+          </label>
+        </div>
+      </aside>
+    </section>
+
+    <video id="auraVideo" class="hidden-media" muted playsinline preload="auto"></video>
+    <audio id="templateMusic" class="hidden-media" preload="auto"></audio>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      /* =========================
+         ELEMENTS
+      ========================== */
+
+      const bootLoader = document.getElementById("bootLoader");
+      const bootPercent = document.getElementById("bootPercent");
+      const bootFill = document.getElementById("bootFill");
+      const bootStatus = document.getElementById("bootStatus");
+      const bootRetry = document.getElementById("bootRetry");
+      const app = document.getElementById("app");
+
+      const canvas = document.getElementById("reelCanvas");
+      const ctx = canvas.getContext("2d", { alpha: false, desynchronized: true });
+      const auraVideo = document.getElementById("auraVideo");
+      const music = document.getElementById("templateMusic");
+      const playBtn = document.getElementById("playBtn");
+      const progressFill = document.getElementById("progressFill");
+      const currentTimeEl = document.getElementById("currentTime");
+      const totalTimeEl = document.getElementById("totalTime");
+
+      /* =========================
+         CONSTANTS
+      ========================== */
+
+      const CANVAS_W = 540;
+      const CANVAS_H = 960;
+      const MEDIA = { x: 0, y: 120, w: 540, h: 720 };
+      const TEMPLATE_DURATION = 13.07;
+      const AURA_SAFE_START = 2.0;
+
+      const TRANSITION_PRE = 0.16;
+      const TRANSITION_POST = 0.10;
+      const AURA_PREP_LEAD = 0.60;
+
+      const SCENES = [
+        { type: "aura",  start: 0.00,  end: 3.70, auraStart: 0.00, id: "aura1" },
+        { type: "photo", start: 3.70,  end: 4.67, slot: 0, id: "p1a" },
+        { type: "photo", start: 4.67,  end: 5.30, slot: 1, id: "p2a" },
+        { type: "photo", start: 5.30,  end: 5.97, slot: 2, id: "p3a" },
+        { type: "aura",  start: 5.97,  end: 6.60, auraStart: AURA_SAFE_START, id: "aura2" },
+        { type: "photo", start: 6.60,  end: 7.27, slot: 0, id: "p1b" },
+        { type: "photo", start: 7.27,  end: 7.90, slot: 1, id: "p2b" },
+        { type: "photo", start: 7.90,  end: 8.53, slot: 2, id: "p3b" },
+        { type: "aura",  start: 8.53,  end: 9.20, auraStart: AURA_SAFE_START, id: "aura3" },
+        { type: "photo", start: 9.20,  end: 9.83, slot: 0, id: "p1c" },
+        { type: "photo", start: 9.83,  end: 10.47, slot: 1, id: "p2c" },
+        { type: "photo", start: 10.47, end: 11.13, slot: 2, id: "p3c" },
+        { type: "aura",  start: 11.13, end: 11.77, auraStart: AURA_SAFE_START, id: "aura4" },
+        { type: "black", start: 11.77, end: TEMPLATE_DURATION, id: "black" }
+      ];
+
+      /* =========================
+         STATE
+      ========================== */
+
+      let ready = false;
+      let playing = false;
+      let raf = null;
+      let currentDuration = TEMPLATE_DURATION;
+      let lastFrameTime = 0;
+      let bootDisplayed = 0;
+      let bootTarget = 0;
+      let bootRaf = null;
+      let preparedAuraScene = "";
+      let auraScenePlaying = "";
+
+      const photos = [null, null, null];
+      const photoObjectUrls = [null, null, null];
+      const placeholders = [];
+
+      /* =========================
+         UTILS
+      ========================== */
+
+      function clamp(v, min = 0, max = 1) {
+        return Math.min(max, Math.max(min, v));
+      }
+
+      function mix(a, b, t) {
+        return a + (b - a) * t;
+      }
+
+      function smoothstep(t) {
+        t = clamp(t);
+        return t * t * (3 - 2 * t);
+      }
+
+      function easeOutCubic(t) {
+        t = clamp(t);
+        return 1 - Math.pow(1 - t, 3);
+      }
+
+      function gaussianPulse(x, center, width) {
+        const d = (x - center) / width;
+        return Math.exp(-(d * d));
+      }
+
+      function formatTime(seconds) {
+        const safe = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
+        return Math.floor(safe / 60) + ":" + String(Math.floor(safe % 60)).padStart(2, "0");
+      }
+
+      function getSourceSize(source) {
+        if (!source) return { w: 1, h: 1 };
+        if (source instanceof HTMLVideoElement) {
+          return { w: source.videoWidth || 1, h: source.videoHeight || 1 };
+        }
+        return { w: source.width || source.naturalWidth || 1, h: source.height || source.naturalHeight || 1 };
+      }
+
+      function coverCrop(source, targetW, targetH) {
+        const { w: sw, h: sh } = getSourceSize(source);
+        const srcRatio = sw / sh;
+        const dstRatio = targetW / targetH;
+
+        if (srcRatio > dstRatio) {
+          const cropW = sh * dstRatio;
+          return { sx: (sw - cropW) / 2, sy: 0, sw: cropW, sh };
+        }
+
+        const cropH = sw / dstRatio;
+        return { sx: 0, sy: (sh - cropH) / 2, sw, sh: cropH };
+      }
+
+      /* =========================
+         BOOT / PRELOAD 0 -> 100
+      ========================== */
+
+      function setBootTarget(value, status) {
+        bootTarget = Math.max(bootTarget, clamp(value, 0, 100));
+        if (status) bootStatus.textContent = status;
+        if (!bootRaf) bootRaf = requestAnimationFrame(animateBootNumber);
+      }
+
+      function animateBootNumber() {
+        const diff = bootTarget - bootDisplayed;
+
+        if (Math.abs(diff) < 0.12) {
+          bootDisplayed = bootTarget;
+        } else {
+          bootDisplayed += Math.max(0.22, diff * 0.14);
+        }
+
+        const shown = Math.min(100, Math.floor(bootDisplayed));
+        bootPercent.textContent = shown + "%";
+        bootFill.style.width = shown + "%";
+
+        if (bootDisplayed < bootTarget - 0.1) {
+          bootRaf = requestAnimationFrame(animateBootNumber);
+        } else {
+          bootRaf = null;
+        }
+      }
+
+      async function fetchAssetWithProgress(url, progressCb) {
+        const response = await fetch(url, { cache: "force-cache" });
+        if (!response.ok) throw new Error("Could not load " + url);
+
+        const total = Number(response.headers.get("content-length")) || 0;
+
+        if (!response.body || !total) {
+          const blob = await response.blob();
+          progressCb(1);
+          return URL.createObjectURL(blob);
+        }
+
+        const reader = response.body.getReader();
+        const chunks = [];
+        let received = 0;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          chunks.push(value);
+          received += value.byteLength;
+          progressCb(clamp(received / total));
+        }
+
+        const type = response.headers.get("content-type") || "application/octet-stream";
+        return URL.createObjectURL(new Blob(chunks, { type }));
+      }
+
+      function waitForMedia(el, eventName, timeout = 10000) {
+        return new Promise((resolve, reject) => {
+          let timer = null;
+
+          const done = () => {
+            cleanup();
+            resolve();
+          };
+
+          const fail = () => {
+            cleanup();
+            reject(new Error("Media failed to decode"));
+          };
+
+          const cleanup = () => {
+            clearTimeout(timer);
+            el.removeEventListener(eventName, done);
+            el.removeEventListener("error", fail);
+          };
+
+          el.addEventListener(eventName, done, { once: true });
+          el.addEventListener("error", fail, { once: true });
+
+          timer = setTimeout(() => {
+            cleanup();
+            reject(new Error("Media loading timed out"));
+          }, timeout);
+        });
+      }
+
+      function seekVideo(time) {
+        return new Promise(resolve => {
+          const target = Math.max(0, Math.min(time, Math.max(0, (auraVideo.duration || 10) - 0.05)));
+
+          const done = () => {
+            auraVideo.removeEventListener("seeked", done);
+            resolve();
+          };
+
+          auraVideo.addEventListener("seeked", done, { once: true });
+
+          try {
+            auraVideo.currentTime = target;
+          } catch (error) {
+            auraVideo.removeEventListener("seeked", done);
+            resolve();
+          }
+
+          setTimeout(() => {
+            auraVideo.removeEventListener("seeked", done);
+            resolve();
+          }, 1200);
+        });
+      }
+
+      async function boot() {
+        try {
+          bootRetry.style.display = "none";
+          setBootTarget(3, "Connecting assets…");
+
+          let videoProgress = 0;
+          let audioProgress = 0;
+
+          const updateNetwork = () => {
+            const combined = videoProgress * 0.65 + audioProgress * 0.35;
+            setBootTarget(5 + combined * 76, "Loading video and music…");
+          };
+
+          const [videoUrl, audioUrl] = await Promise.all([
+            fetchAssetWithProgress("./template1-aura.mp4", p => {
+              videoProgress = p;
+              updateNetwork();
+            }),
+            fetchAssetWithProgress("./template1-music.mp3", p => {
+              audioProgress = p;
+              updateNetwork();
+            })
+          ]);
+
+          setBootTarget(83, "Decoding media…");
+
+          auraVideo.src = videoUrl;
+          music.src = audioUrl;
+          auraVideo.load();
+          music.load();
+
+          await Promise.all([
+            waitForMedia(auraVideo, "loadeddata"),
+            waitForMedia(music, "canplay")
+          ]);
+
+          currentDuration = Math.min(
+            TEMPLATE_DURATION,
+            Number.isFinite(music.duration) && music.duration > 0 ? music.duration : TEMPLATE_DURATION
+          );
+
+          totalTimeEl.textContent = formatTime(currentDuration);
+          setBootTarget(90, "Warming frame effects…");
+
+          // Warm the exact repeat point so Aura #2/#3/#4 never need to start from black.
+          await seekVideo(AURA_SAFE_START);
+          await new Promise(r => setTimeout(r, 60));
+          await seekVideo(0);
+
+          setBootTarget(96, "Building demo frames…");
+          buildPlaceholderCanvases();
+          renderFrame(0);
+
+          await new Promise(r => setTimeout(r, 80));
+          setBootTarget(100, "Ready");
+
+          await new Promise(resolve => {
+            const check = () => {
+              if (bootDisplayed >= 99.5) resolve();
+              else requestAnimationFrame(check);
+            };
+            check();
+          });
+
+          ready = true;
+          document.body.classList.add("is-ready");
+          app.setAttribute("aria-hidden", "false");
+          bootLoader.classList.add("is-done");
+        } catch (error) {
+          console.error(error);
+          bootStatus.textContent = "Could not prepare the template.";
+          bootRetry.style.display = "inline-block";
+        }
+      }
+
+      bootRetry.addEventListener("click", () => location.reload());
+
+      /* =========================
+         DEMO PLACEHOLDERS
+      ========================== */
+
+      function makePlaceholder(label, colors) {
+        const c = document.createElement("canvas");
+        c.width = MEDIA.w;
+        c.height = MEDIA.h;
+        const g = c.getContext("2d");
+
+        const grad = g.createLinearGradient(0, 0, MEDIA.w, MEDIA.h);
+        grad.addColorStop(0, colors[0]);
+        grad.addColorStop(.48, colors[1]);
+        grad.addColorStop(1, colors[2]);
+        g.fillStyle = grad;
+        g.fillRect(0, 0, c.width, c.height);
+
+        // Soft vertical bands similar to the reference template.
+        for (let i = 0; i < 4; i++) {
+          const x = (i / 3) * c.width;
+          const band = g.createLinearGradient(x - 80, 0, x + 80, 0);
+          band.addColorStop(0, "rgba(0,0,0,0)");
+          band.addColorStop(.5, "rgba(0,0,0,.12)");
+          band.addColorStop(1, "rgba(0,0,0,0)");
+          g.fillStyle = band;
+          g.fillRect(x - 90, 0, 180, c.height);
+        }
+
+        const vignette = g.createRadialGradient(c.width / 2, c.height / 2, 70, c.width / 2, c.height / 2, 430);
+        vignette.addColorStop(0, "rgba(255,255,255,.03)");
+        vignette.addColorStop(1, "rgba(0,0,0,.35)");
+        g.fillStyle = vignette;
+        g.fillRect(0, 0, c.width, c.height);
+
+        g.textAlign = "center";
+        g.textBaseline = "middle";
+        g.font = "700 48px Georgia, serif";
+        g.lineWidth = 2;
+        g.strokeStyle = "rgba(0,0,0,.65)";
+        g.fillStyle = "#fff";
+        g.strokeText(label, c.width / 2, c.height / 2);
+        g.fillText(label, c.width / 2, c.height / 2);
+
+        return c;
+      }
+
+      function buildPlaceholderCanvases() {
+        placeholders.length = 0;
+        placeholders.push(
+          makePlaceholder("PHOTO 1", ["#4a0014", "#a90020", "#4f0016"]),
+          makePlaceholder("PHOTO 2", ["#3b1c00", "#9a5500", "#3d2100"]),
+          makePlaceholder("PHOTO 3", ["#003b48", "#007287", "#003d49"])
+        );
+      }
+
+      function getPhotoSource(slot) {
+        return photos[slot] || placeholders[slot];
+      }
+
+      /* =========================
+         FRAME-BY-FRAME DRAWING
+      ========================== */
+
+      function clearFrame() {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = "source-over";
+        ctx.filter = "none";
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+      }
+
+      function drawSourceOnce(source, options = {}) {
+        if (!source) return;
+
+        const alpha = options.alpha ?? 1;
+        const scaleX = options.scaleX ?? 1;
+        const scaleY = options.scaleY ?? 1;
+        const xOffset = options.xOffset ?? 0;
+        const yOffset = options.yOffset ?? 0;
+        const blur = options.blur ?? 0;
+        const brightness = options.brightness ?? 1;
+        const saturate = options.saturate ?? 1;
+        const rotate = options.rotate ?? 0;
+        const composite = options.composite || "source-over";
+
+        const crop = coverCrop(source, MEDIA.w, MEDIA.h);
+        const cx = MEDIA.x + MEDIA.w / 2;
+        const cy = MEDIA.y + MEDIA.h / 2;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(MEDIA.x, MEDIA.y, MEDIA.w, MEDIA.h);
+        ctx.clip();
+        ctx.globalCompositeOperation = composite;
+        ctx.globalAlpha = clamp(alpha);
+        ctx.filter = `blur(${Math.max(0, blur)}px) brightness(${brightness}) saturate(${saturate})`;
+        ctx.translate(cx + xOffset, cy + yOffset);
+        ctx.rotate(rotate);
+        ctx.scale(scaleX, scaleY);
+        ctx.drawImage(
+          source,
+          crop.sx,
+          crop.sy,
+          crop.sw,
+          crop.sh,
+          -MEDIA.w / 2,
+          -MEDIA.h / 2,
+          MEDIA.w,
+          MEDIA.h
+        );
+        ctx.restore();
+      }
+
+      function drawProSource(source, options = {}) {
+        const alpha = options.alpha ?? 1;
+        const blur = options.blur ?? 0;
+        const streak = options.streak ?? 0;
+        const zoomGhost = options.zoomGhost ?? 0;
+        const scaleX = options.scaleX ?? 1;
+        const scaleY = options.scaleY ?? 1;
+        const brightness = options.brightness ?? 1;
+        const saturate = options.saturate ?? 1;
+        const yOffset = options.yOffset ?? 0;
+        const xOffset = options.xOffset ?? 0;
+
+        // Multi-sample vertical + zoom ghosts: this is the frame-by-frame motion smear.
+        if (streak > 0.1 || zoomGhost > 0.001) {
+          const copies = 7;
+          for (let i = copies; i >= 1; i--) {
+            const f = i / copies;
+            const ghostAlpha = alpha * 0.045 * (1 - f * 0.35);
+            const zoom = 1 + zoomGhost * f;
+            const dy = streak * f;
+
+            drawSourceOnce(source, {
+              alpha: ghostAlpha,
+              scaleX: scaleX * zoom,
+              scaleY: scaleY * (zoom + 0.018 * f),
+              yOffset: yOffset + dy,
+              xOffset,
+              blur: blur + 1.5 * f,
+              brightness: brightness + .06 * f,
+              saturate,
+              composite: "screen"
+            });
+
+            drawSourceOnce(source, {
+              alpha: ghostAlpha,
+              scaleX: scaleX * zoom,
+              scaleY: scaleY * (zoom + 0.018 * f),
+              yOffset: yOffset - dy,
+              xOffset,
+              blur: blur + 1.5 * f,
+              brightness: brightness + .06 * f,
+              saturate,
+              composite: "screen"
+            });
+          }
+        }
+
+        drawSourceOnce(source, {
+          alpha,
+          scaleX,
+          scaleY,
+          xOffset,
+          yOffset,
+          blur,
+          brightness,
+          saturate
+        });
+      }
+
+      function drawTransitionFlash(intensity) {
+        intensity = clamp(intensity);
+        if (intensity <= 0.002) return;
+
+        ctx.save();
+        ctx.globalCompositeOperation = "screen";
+        ctx.globalAlpha = 0.13 * intensity;
+        ctx.filter = `blur(${12 + 10 * intensity}px)`;
+
+        const grad = ctx.createLinearGradient(0, MEDIA.y, 0, MEDIA.y + MEDIA.h);
+        grad.addColorStop(0, "rgba(255,255,255,0)");
+        grad.addColorStop(.42, "rgba(255,255,255,.45)");
+        grad.addColorStop(.55, "rgba(255,255,255,.8)");
+        grad.addColorStop(.70, "rgba(255,255,255,.18)");
+        grad.addColorStop(1, "rgba(255,255,255,0)");
+
+        ctx.fillStyle = grad;
+        ctx.fillRect(MEDIA.x, MEDIA.y, MEDIA.w, MEDIA.h);
+        ctx.restore();
+      }
+
+      function renderAura(scene, alpha = 1, fx = {}) {
+        if (auraVideo.readyState < 2) return;
+
+        drawProSource(auraVideo, {
+          alpha,
+          scaleX: fx.scaleX ?? 1.01,
+          scaleY: fx.scaleY ?? 1.01,
+          blur: fx.blur ?? 0,
+          streak: fx.streak ?? 0,
+          zoomGhost: fx.zoomGhost ?? 0,
+          brightness: fx.brightness ?? 1,
+          saturate: fx.saturate ?? 1,
+          yOffset: fx.yOffset ?? 0
+        });
+      }
+
+      function photoPulse(localTime) {
+        // The reference does a second strong vertical smear just after each photo appears.
+        const hit1 = gaussianPulse(localTime, 0.12, 0.085);
+        const hit2 = gaussianPulse(localTime, 0.24, 0.095) * 0.58;
+        return clamp(hit1 + hit2);
+      }
+
+      function renderPhoto(scene, t, alpha = 1, fx = {}) {
+        const source = getPhotoSource(scene.slot);
+        const local = Math.max(0, t - scene.start);
+        const pulse = photoPulse(local);
+
+        const transitionIntensity = fx.transitionIntensity ?? 0;
+        const entry = Math.max(pulse, transitionIntensity);
+
+        const scaleBase = 1 + 0.055 * pulse;
+        const scaleYBeat = 1 + 0.085 * pulse;
+
+        drawProSource(source, {
+          alpha,
+          scaleX: (fx.scaleX ?? 1) * scaleBase,
+          scaleY: (fx.scaleY ?? 1) * scaleYBeat,
+          yOffset: fx.yOffset ?? 0,
+          blur: Math.max(fx.blur ?? 0, 5.5 * pulse),
+          streak: Math.max(fx.streak ?? 0, 27 * pulse + 22 * transitionIntensity),
+          zoomGhost: Math.max(fx.zoomGhost ?? 0, 0.052 * pulse + 0.055 * transitionIntensity),
+          brightness: (fx.brightness ?? 1) + 0.14 * entry,
+          saturate: (fx.saturate ?? 1) + 0.06 * entry
+        });
+      }
+
+      function renderScene(scene, t, alpha = 1, fx = {}) {
+        if (!scene || scene.type === "black") return;
+        if (scene.type === "aura") renderAura(scene, alpha, fx);
+        if (scene.type === "photo") renderPhoto(scene, t, alpha, fx);
+      }
+
+      function sceneAt(t) {
+        for (let i = 0; i < SCENES.length; i++) {
+          if (t >= SCENES[i].start && t < SCENES[i].end) return i;
+        }
+        return SCENES.length - 1;
+      }
+
+      function activeTransition(t) {
+        for (let i = 1; i < SCENES.length; i++) {
+          const incoming = SCENES[i];
+          if (incoming.type === "black") continue;
+
+          const start = incoming.start - TRANSITION_PRE;
+          const end = incoming.start + TRANSITION_POST;
+
+          if (t >= start && t <= end) {
+            return {
+              prev: SCENES[i - 1],
+              next: incoming,
+              phase: clamp((t - start) / (end - start))
+            };
+          }
+        }
+        return null;
+      }
+
+      function renderFrame(t) {
+        clearFrame();
+
+        const transition = activeTransition(t);
+
+        if (transition) {
+          const phase = smoothstep(transition.phase);
+          const inv = 1 - phase;
+          const smear = Math.sin(Math.PI * transition.phase);
+
+          // Outgoing layer stretches and smears away.
+          renderScene(transition.prev, t, Math.pow(inv, 0.72), {
+            scaleX: 1 + 0.025 * smear,
+            scaleY: 1 + 0.10 * smear,
+            blur: 2 + 6.5 * smear,
+            streak: 13 * smear,
+            zoomGhost: 0.025 * smear,
+            brightness: 1 + 0.07 * smear
+          });
+
+          // Incoming layer arrives with strong vertical motion blur + zoom ghost, then snaps sharp.
+          const settle = easeOutCubic(phase);
+          renderScene(transition.next, t, Math.pow(phase, 0.72), {
+            scaleX: mix(1.09, 1, settle),
+            scaleY: mix(1.22, 1, settle),
+            yOffset: mix(18, 0, settle),
+            blur: mix(11, 0, settle),
+            streak: mix(42, 0, settle),
+            zoomGhost: mix(0.08, 0, settle),
+            brightness: mix(1.20, 1, settle),
+            saturate: mix(1.10, 1, settle),
+            transitionIntensity: 1 - settle
+          });
+
+          drawTransitionFlash(Math.pow(smear, 3));
+          return;
+        }
+
+        const index = sceneAt(t);
+        const scene = SCENES[index];
+        renderScene(scene, t, 1, {});
+      }
+
+      /* =========================
+         AURA VIDEO SYNC / PRE-SEEK
+      ========================== */
+
+      function upcomingAuraScene(t) {
+        for (const scene of SCENES) {
+          if (scene.type !== "aura" || scene.id === "aura1") continue;
+          if (t >= scene.start - AURA_PREP_LEAD && t < scene.end + TRANSITION_POST) return scene;
+        }
+        return null;
+      }
+
+      function syncAura(t) {
+        const intro = SCENES[0];
+
+        // Intro Aura: sync directly to template time so its original fade remains exactly once.
+        if (t < intro.end + TRANSITION_POST) {
+          const target = clamp(t, 0, Math.max(0, (auraVideo.duration || 5) - .05));
+          if (Math.abs(auraVideo.currentTime - target) > .20) {
+            try { auraVideo.currentTime = target; } catch (error) {}
+          }
+
+          if (playing && auraVideo.paused) auraVideo.play().catch(() => {});
+          preparedAuraScene = "";
+          auraScenePlaying = "aura1";
+          return;
+        }
+
+        const aura = upcomingAuraScene(t);
+
+        if (!aura) {
+          if (!auraVideo.paused) auraVideo.pause();
+          auraScenePlaying = "";
+          return;
+        }
+
+        const transitionStart = aura.start - TRANSITION_PRE;
+
+        // Hidden preparation window. Seek to 2s long before it becomes visible.
+        if (t < transitionStart) {
+          if (preparedAuraScene !== aura.id) {
+            auraVideo.pause();
+            try { auraVideo.currentTime = aura.auraStart; } catch (error) {}
+            preparedAuraScene = aura.id;
+            auraScenePlaying = "";
+          }
+          return;
+        }
+
+        // When crossfade starts, the video is already sitting on a decoded 2s frame.
+        const desired = aura.auraStart + Math.max(0, t - aura.start);
+        if (auraScenePlaying !== aura.id) {
+          if (Math.abs(auraVideo.currentTime - aura.auraStart) > .22) {
+            try { auraVideo.currentTime = aura.auraStart; } catch (error) {}
+          }
+          auraScenePlaying = aura.id;
+        } else if (Math.abs(auraVideo.currentTime - desired) > .28) {
+          try { auraVideo.currentTime = desired; } catch (error) {}
+        }
+
+        if (playing && auraVideo.paused) auraVideo.play().catch(() => {});
+      }
+
+      /* =========================
+         PLAYER
+      ========================== */
+
+      function resetPlayback() {
+        music.pause();
+        auraVideo.pause();
+        music.currentTime = 0;
+        preparedAuraScene = "";
+        auraScenePlaying = "";
+        try { auraVideo.currentTime = 0; } catch (error) {}
+        progressFill.style.width = "0%";
+        currentTimeEl.textContent = "0:00";
+        renderFrame(0);
+      }
+
+      async function startPlayback() {
+        if (!ready) return;
+
+        if (music.currentTime >= currentDuration - .08) resetPlayback();
+
+        playing = true;
+        playBtn.textContent = "❚❚";
+
+        try {
+          await music.play();
+        } catch (error) {
+          playing = false;
+          playBtn.textContent = "▶";
+          return;
+        }
+
+        lastFrameTime = performance.now();
+        syncAura(music.currentTime);
+        previewLoop();
+      }
+
+      function pausePlayback() {
+        playing = false;
+        playBtn.textContent = "▶";
+        music.pause();
+        auraVideo.pause();
+
+        if (raf) {
+          cancelAnimationFrame(raf);
+          raf = null;
+        }
+      }
+
+      function previewLoop() {
+        if (!playing) return;
+
+        const t = music.currentTime;
+        const progress = clamp(t / currentDuration);
+
+        syncAura(t);
+        renderFrame(t);
+
+        progressFill.style.width = (progress * 100) + "%";
+        currentTimeEl.textContent = formatTime(t);
+
+        if (t >= currentDuration - .035 || music.ended) {
+          music.currentTime = 0;
+          preparedAuraScene = "";
+          auraScenePlaying = "";
+          try { auraVideo.currentTime = 0; } catch (error) {}
+          music.play().catch(() => {});
+        }
+
+        raf = requestAnimationFrame(previewLoop);
+      }
+
+      playBtn.addEventListener("click", () => {
+        if (playing) pausePlayback();
+        else startPlayback();
+      });
+
+      /* =========================
+         PHOTO INPUTS
+      ========================== */
+
+      async function decodePhoto(file, slot) {
+        if (photoObjectUrls[slot]) {
+          URL.revokeObjectURL(photoObjectUrls[slot]);
+          photoObjectUrls[slot] = null;
+        }
+
+        if (photos[slot] && photos[slot].close) {
+          try { photos[slot].close(); } catch (error) {}
+        }
+
+        const url = URL.createObjectURL(file);
+        photoObjectUrls[slot] = url;
+
+        if ("createImageBitmap" in window) {
+          try {
+            photos[slot] = await createImageBitmap(file, { imageOrientation: "from-image" });
+            return url;
+          } catch (error) {}
+        }
+
+        const image = new Image();
+        image.decoding = "async";
+        image.src = url;
+        await image.decode();
+        photos[slot] = image;
+        return url;
+      }
+
+      for (let i = 1; i <= 3; i++) {
+        const slot = i - 1;
+        const input = document.getElementById("photoInput" + i);
+        const thumbImage = document.getElementById("thumbImage" + i);
+        const thumbText = document.getElementById("thumbText" + i);
+        const fileName = document.getElementById("fileName" + i);
+
+        input.addEventListener("change", async () => {
+          const file = input.files && input.files[0];
+          if (!file) return;
+
+          try {
+            const url = await decodePhoto(file, slot);
+            thumbImage.src = url;
+            thumbImage.style.display = "block";
+            thumbText.style.display = "none";
+            fileName.textContent = file.name;
+            renderFrame(music.currentTime || 0);
+          } catch (error) {
+            console.error(error);
+            fileName.textContent = "Could not load image";
+          }
+        });
+      }
+
+      /* =========================
+         START
+      ========================== */
+
+      boot();
+    })();
+  </script>
+</body>
+</html>
