@@ -19,7 +19,8 @@
       <div class="player-column">
         <div class="reel-frame">
           <div class="inner-media">
-            <video id="auraVideo" class="layer" src="./template1-aura.mp4" muted playsinline preload="auto" loop></video>
+            <video id="auraVideo" class="layer" src="./template1-aura.mp4" muted playsinline preload="auto"></video>
+            <video id="auraMidVideo" class="layer" src="./template1-aura.mp4" muted playsinline preload="auto" style="display:block;object-fit:cover;opacity:0;transform:scale(1.01)"></video>
             <div class="layer photo-layer" id="photoLayer1"><img id="photoPreview1" alt=""><div class="photo-placeholder" id="placeholder1">PHOTO 1</div></div>
             <div class="layer photo-layer" id="photoLayer2"><img id="photoPreview2" alt=""><div class="photo-placeholder" id="placeholder2">PHOTO 2</div></div>
             <div class="layer photo-layer" id="photoLayer3"><img id="photoPreview3" alt=""><div class="photo-placeholder" id="placeholder3">PHOTO 3</div></div>
@@ -50,45 +51,95 @@
 
   <script>
     const auraVideo=document.getElementById('auraVideo');
+    const auraMidVideo=document.getElementById('auraMidVideo');
     const music=document.getElementById('templateMusic');
     const playBtn=document.getElementById('playBtn');
     const progressFill=document.getElementById('progressFill');
     const currentTimeEl=document.getElementById('currentTime');
     const totalTimeEl=document.getElementById('totalTime');
     const photoLayers=[1,2,3].map(i=>document.getElementById('photoLayer'+i));
-    let playing=false,animationFrame=null,duration=13.07,middleAuraStarted=false;
+    let playing=false,animationFrame=null,duration=13.07;
+
     function formatTime(seconds){const safe=Number.isFinite(seconds)?Math.max(0,seconds):0;return Math.floor(safe/60)+':'+String(Math.floor(safe%60)).padStart(2,'0')}
     function setDuration(){if(Number.isFinite(music.duration)&&music.duration>0)duration=music.duration;totalTimeEl.textContent=formatTime(duration)}
     music.addEventListener('loadedmetadata',setDuration);setDuration();
 
     function hidePhotos(){photoLayers.forEach(layer=>{layer.style.opacity='0';layer.style.transform='scale(1.08)'})}
-    function showAura(){hidePhotos();auraVideo.style.opacity='1';auraVideo.style.transform='scale(1.01)'}
-    function showPhoto(index,segmentProgress){auraVideo.style.opacity='0';photoLayers.forEach((layer,i)=>{const active=i===index;layer.style.opacity=active?'1':'0';if(active){const scale=1.08-Math.min(Math.max(segmentProgress,0),1)*0.08;layer.style.transform='scale('+scale+')'}})}
+    function showIntroAura(){hidePhotos();auraMidVideo.style.opacity='0';auraVideo.style.opacity='1';auraVideo.style.transform='scale(1.01)'}
+    function showMiddleAura(){hidePhotos();auraVideo.style.opacity='0';auraMidVideo.style.opacity='1';auraMidVideo.style.transform='scale(1.01)';if(auraMidVideo.paused)auraMidVideo.play().catch(()=>{})}
+    function showPhoto(index,segmentProgress){auraVideo.pause();auraMidVideo.pause();auraVideo.style.opacity='0';auraMidVideo.style.opacity='0';photoLayers.forEach((layer,i)=>{const active=i===index;layer.style.opacity=active?'1':'0';if(active){const scale=1.08-Math.min(Math.max(segmentProgress,0),1)*0.08;layer.style.transform='scale('+scale+')'}})}
+
+    function prepareMiddleAura(){
+      const seek=()=>{try{auraMidVideo.currentTime=2;auraMidVideo.pause()}catch(e){}};
+      if(auraMidVideo.readyState>=1)seek();
+      else auraMidVideo.addEventListener('loadedmetadata',seek,{once:true});
+    }
 
     function updateScene(time){
       const p=Math.min(Math.max(time/(duration||13.07),0),1);
       progressFill.style.width=(p*100)+'%';currentTimeEl.textContent=formatTime(time);
-      if(p<.18){middleAuraStarted=false;showAura();return}
-if(p<.30){showPhoto(0,(p-.18)/.12);return}
-if(p<.42){showPhoto(1,(p-.30)/.12);return}
-if(p<.54){showPhoto(2,(p-.42)/.12);return}
-if(p<.68){if(!middleAuraStarted){middleAuraStarted=true;try{auraVideo.currentTime=2}catch(e){}auraVideo.play().catch(()=>{})}showAura();return}
-if(p<.79){showPhoto(0,(p-.68)/.11);return}
-if(p<.90){showPhoto(1,(p-.79)/.11);return}
-showPhoto(2,(p-.90)/.10)
+      if(p<.18){showIntroAura();return}
+      if(p<.30){showPhoto(0,(p-.18)/.12);return}
+      if(p<.42){showPhoto(1,(p-.30)/.12);return}
+      if(p<.54){showPhoto(2,(p-.42)/.12);return}
+      if(p<.68){showMiddleAura();return}
+      if(p<.79){showPhoto(0,(p-.68)/.11);return}
+      if(p<.90){showPhoto(1,(p-.79)/.11);return}
+      showPhoto(2,(p-.90)/.10)
     }
 
-    function resetPlayback(){music.pause();auraVideo.pause();music.currentTime=0;try{auraVideo.currentTime=0}catch(e){}progressFill.style.width='0%';currentTimeEl.textContent='0:00';showAura()}
-   async function startPlayback(){resetPlayback();playing=true;playBtn.textContent='❚❚';try{await music.play()}catch(e){playing=false;playBtn.textContent='▶';return}auraVideo.play().catch(e=>console.error('Aura video error:',e));previewLoop()}
-    function stopPlayback(){playing=false;playBtn.textContent='▶';music.pause();auraVideo.pause();if(animationFrame){cancelAnimationFrame(animationFrame);animationFrame=null}}
-    function previewLoop(){if(!playing)return;const time=music.currentTime;updateScene(time);if(time>=duration-.04||music.ended){music.currentTime=0;try{auraVideo.currentTime=0}catch(e){}auraVideo.play().catch(()=>{});music.play().catch(()=>{})}animationFrame=requestAnimationFrame(previewLoop)}
+    function resetPlayback(){
+      music.pause();auraVideo.pause();auraMidVideo.pause();
+      music.currentTime=0;
+      try{auraVideo.currentTime=0}catch(e){}
+      try{auraMidVideo.currentTime=2}catch(e){}
+      progressFill.style.width='0%';
+      currentTimeEl.textContent='0:00';
+      showIntroAura();
+    }
+
+    async function startPlayback(){
+      resetPlayback();
+      playing=true;
+      playBtn.textContent='❚❚';
+      try{await music.play()}catch(e){playing=false;playBtn.textContent='▶';return}
+      auraVideo.play().catch(e=>console.error('Aura intro error:',e));
+      previewLoop();
+    }
+
+    function stopPlayback(){
+      playing=false;
+      playBtn.textContent='▶';
+      music.pause();auraVideo.pause();auraMidVideo.pause();
+      if(animationFrame){cancelAnimationFrame(animationFrame);animationFrame=null}
+    }
+
+    function previewLoop(){
+      if(!playing)return;
+      const time=music.currentTime;
+      updateScene(time);
+
+      if(time>=duration-.04||music.ended){
+        music.currentTime=0;
+        try{auraVideo.currentTime=0}catch(e){}
+        try{auraMidVideo.currentTime=2}catch(e){}
+        auraMidVideo.pause();
+        auraVideo.play().catch(()=>{});
+        music.play().catch(()=>{});
+      }
+
+      animationFrame=requestAnimationFrame(previewLoop)
+    }
+
     playBtn.addEventListener('click',()=>playing?stopPlayback():startPlayback());
 
     for(let i=1;i<=3;i++){
       const input=document.getElementById('photoInput'+i),preview=document.getElementById('photoPreview'+i),placeholder=document.getElementById('placeholder'+i),thumbImage=document.getElementById('thumbImage'+i),thumbText=document.getElementById('thumbText'+i),fileName=document.getElementById('fileName'+i);
       input.addEventListener('change',()=>{const file=input.files&&input.files[0];if(!file)return;const url=URL.createObjectURL(file);preview.src=url;preview.style.display='block';placeholder.style.display='none';thumbImage.src=url;thumbImage.style.display='block';thumbText.style.display='none';fileName.textContent=file.name})
     }
-    showAura();
+
+    prepareMiddleAura();
+    showIntroAura();
   </script>
 </body>
 </html>
