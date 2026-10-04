@@ -56,8 +56,7 @@
     const currentTimeEl=document.getElementById('currentTime');
     const totalTimeEl=document.getElementById('totalTime');
     const photoLayers=[1,2,3].map(i=>document.getElementById('photoLayer'+i));
-    let playing=false,animationFrame=null,duration=13.07;
-
+    let playing=false,animationFrame=null,duration=13.07,middleAuraStarted=false;
     function formatTime(seconds){const safe=Number.isFinite(seconds)?Math.max(0,seconds):0;return Math.floor(safe/60)+':'+String(Math.floor(safe%60)).padStart(2,'0')}
     function setDuration(){if(Number.isFinite(music.duration)&&music.duration>0)duration=music.duration;totalTimeEl.textContent=formatTime(duration)}
     music.addEventListener('loadedmetadata',setDuration);setDuration();
@@ -70,11 +69,11 @@
       const p=Math.min(Math.max(time/(duration||13.07),0),1);
       progressFill.style.width=(p*100)+'%';currentTimeEl.textContent=formatTime(time);
       if(p<.18){showAura();return}
-      if(p<.30){showPhoto(0,(p-.18)/.12);return}
+      if(p<.18){middleAuraStarted=false;showAura();return}
       if(p<.42){showPhoto(1,(p-.30)/.12);return}
       if(p<.54){showPhoto(2,(p-.42)/.12);return}
       if(p<.68){showAura();return}
-      if(p<.79){showPhoto(0,(p-.68)/.11);return}
+      if(p<.68){if(!middleAuraStarted){middleAuraStarted=true;try{auraVideo.currentTime=2}catch(e){}auraVideo.play().catch(()=>{})}showAura();return}
       if(p<.90){showPhoto(1,(p-.79)/.11);return}
       showPhoto(2,(p-.90)/.10)
     }
