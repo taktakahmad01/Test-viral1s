@@ -1501,28 +1501,28 @@
     ========================================================= */
 
     const timeline = [
-      { name: "aura1",  type: "aura",  start: 0.00,  end: 3.80, aura: 1 },
+  { name: "aura1", type: "aura", start: 0.00, end: 3.70, aura: 1 },
 
-      { name: "p1a",    type: "photo", start: 3.80,  end: 4.70, photo: 0, from: "aura" },
-      { name: "p2a",    type: "photo", start: 4.70,  end: 5.35, photo: 1, fromPhoto: 0, direction: 1 },
-      { name: "p3a",    type: "photo", start: 5.35,  end: 5.95, photo: 2, fromPhoto: 1, direction: -1 },
+  { name: "p1a", type: "photo", start: 3.70, end: 4.45, photo: 0, from: "aura" },
+  { name: "p2a", type: "photo", start: 4.45, end: 5.15, photo: 1, fromPhoto: 0, direction: 1 },
+  { name: "p3a", type: "photo", start: 5.15, end: 5.93, photo: 2, fromPhoto: 1, direction: -1 },
 
-      { name: "aura2",  type: "aura",  start: 5.95,  end: 6.60, aura: 2, fromPhoto: 2 },
+  { name: "aura2", type: "aura", start: 5.97, end: 6.57, aura: 2, fromPhoto: 2 },
 
-      { name: "p1b",    type: "photo", start: 6.60,  end: 7.40, photo: 0, from: "aura" },
-      { name: "p2b",    type: "photo", start: 7.40,  end: 8.00, photo: 1, fromPhoto: 0, direction: 1 },
-      { name: "p3b",    type: "photo", start: 8.00,  end: 8.60, photo: 2, fromPhoto: 1, direction: -1 },
+  { name: "p1b", type: "photo", start: 6.60, end: 7.24, photo: 0, from: "aura" },
+  { name: "p2b", type: "photo", start: 7.24, end: 7.87, photo: 1, fromPhoto: 0, direction: 1 },
+  { name: "p3b", type: "photo", start: 7.87, end: 8.50, photo: 2, fromPhoto: 1, direction: -1 },
 
-      { name: "aura3",  type: "aura",  start: 8.60,  end: 9.20, aura: 3, fromPhoto: 2 },
+  { name: "aura3", type: "aura", start: 8.53, end: 9.17, aura: 3, fromPhoto: 2 },
 
-      { name: "p1c",    type: "photo", start: 9.20,  end: 10.00, photo: 0, from: "aura" },
-      { name: "p2c",    type: "photo", start: 10.00, end: 10.60, photo: 1, fromPhoto: 0, direction: 1 },
-      { name: "p3c",    type: "photo", start: 10.60, end: 11.20, photo: 2, fromPhoto: 1, direction: -1 },
+  { name: "p1c", type: "photo", start: 9.20, end: 9.83, photo: 0, from: "aura" },
+  { name: "p2c", type: "photo", start: 9.83, end: 10.47, photo: 1, fromPhoto: 0, direction: 1 },
+  { name: "p3c", type: "photo", start: 10.47, end: 11.10, photo: 2, fromPhoto: 1, direction: -1 },
 
-      { name: "aura4",  type: "aura",  start: 11.20, end: 11.85, aura: 4, fromPhoto: 2 },
+  { name: "aura4", type: "aura", start: 11.13, end: 11.77, aura: 4, fromPhoto: 2 },
 
-      { name: "black",  type: "black", start: 11.85, end: 99 }
-    ];
+  { name: "black", type: "black", start: 11.77, end: 99 }
+];
 
     function getScene(time) {
       return (
