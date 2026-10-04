@@ -80,7 +80,7 @@
     }
 
     function resetPlayback(){music.pause();auraVideo.pause();music.currentTime=0;try{auraVideo.currentTime=0}catch(e){}progressFill.style.width='0%';currentTimeEl.textContent='0:00';showAura()}
-    async function startPlayback(){resetPlayback();playing=true;playBtn.textContent='❚❚';try{await Promise.all([music.play(),auraVideo.play()])}catch(e){playing=false;playBtn.textContent='▶';return}previewLoop()}
+   async function startPlayback(){resetPlayback();playing=true;playBtn.textContent='❚❚';try{await music.play()}catch(e){playing=false;playBtn.textContent='▶';return}auraVideo.play().catch(e=>console.error('Aura video error:',e));previewLoop()}
     function stopPlayback(){playing=false;playBtn.textContent='▶';music.pause();auraVideo.pause();if(animationFrame){cancelAnimationFrame(animationFrame);animationFrame=null}}
     function previewLoop(){if(!playing)return;const time=music.currentTime;updateScene(time);if(time>=duration-.04||music.ended){music.currentTime=0;try{auraVideo.currentTime=0}catch(e){}auraVideo.play().catch(()=>{});music.play().catch(()=>{})}animationFrame=requestAnimationFrame(previewLoop)}
     playBtn.addEventListener('click',()=>playing?stopPlayback():startPlayback());
