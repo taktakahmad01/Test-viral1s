@@ -68,14 +68,14 @@
     function updateScene(time){
       const p=Math.min(Math.max(time/(duration||13.07),0),1);
       progressFill.style.width=(p*100)+'%';currentTimeEl.textContent=formatTime(time);
-      if(p<.18){showAura();return}
       if(p<.18){middleAuraStarted=false;showAura();return}
-      if(p<.42){showPhoto(1,(p-.30)/.12);return}
-      if(p<.54){showPhoto(2,(p-.42)/.12);return}
-      if(p<.68){showAura();return}
-      if(p<.68){if(!middleAuraStarted){middleAuraStarted=true;try{auraVideo.currentTime=2}catch(e){}auraVideo.play().catch(()=>{})}showAura();return}
-      if(p<.90){showPhoto(1,(p-.79)/.11);return}
-      showPhoto(2,(p-.90)/.10)
+if(p<.30){showPhoto(0,(p-.18)/.12);return}
+if(p<.42){showPhoto(1,(p-.30)/.12);return}
+if(p<.54){showPhoto(2,(p-.42)/.12);return}
+if(p<.68){if(!middleAuraStarted){middleAuraStarted=true;try{auraVideo.currentTime=2}catch(e){}auraVideo.play().catch(()=>{})}showAura();return}
+if(p<.79){showPhoto(0,(p-.68)/.11);return}
+if(p<.90){showPhoto(1,(p-.79)/.11);return}
+showPhoto(2,(p-.90)/.10)
     }
 
     function resetPlayback(){music.pause();auraVideo.pause();music.currentTime=0;try{auraVideo.currentTime=0}catch(e){}progressFill.style.width='0%';currentTimeEl.textContent='0:00';showAura()}
