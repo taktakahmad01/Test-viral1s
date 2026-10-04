@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viral1s Template Test</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: #0b0b0f;
+      color: #fff;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body { overflow-x: hidden; }
+
+    button, input { font: inherit; }
+
+    /* ===== LOADER ===== */
+
+    .boot-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 50% 34%, rgba(118,92,255,.22), transparent 34%),
+        #09090d;
+      transition: opacity .28s ease, visibility .28s ease;
+    }
+
+    .boot-loader.is-done {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .boot-card {
+      width: min(84vw, 340px);
+      text-align: center;
+    }
+
+    .boot-logo {
+      width: 62px;
+      height: 62px;
+      margin: 0 auto 18px;
+      display: grid;
+      place-items: center;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #765cff, #527cff);
+      box-shadow: 0 16px 50px rgba(82,124,255,.28);
+      font-size: 27px;
+      font-weight: 900;
+    }
+
+    .boot-title {
+      font-size: 18px;
+      font-weight: 850;
+    }
+
+    .boot-sub {
+      margin-top: 6px;
+      color: #8f8f9b;
+      font-size: 12px;
+    }
+
+    .boot-track {
+      height: 8px;
+      margin-top: 20px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #202029;
+    }
+
+    .boot-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #765cff, #527cff);
+      transition: width .16s linear;
+    }
+
+    .boot-percent {
+      margin-top: 10px;
+      color: #c7c7d0;
+      font-size: 13px;
+      font-weight: 750;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ===== APP ===== */
+
+    .app {
+      width: min(100%, 1080px);
+      margin: 0 auto;
+      padding: 16px;
+      opacity: 0;
+      transition: opacity .25s ease;
+    }
+
+    .app.is-ready { opacity: 1; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .title strong {
+      display: block;
+      font-size: 18px;
+    }
+
+    .title span {
+      display: block;
+      margin-top: 3px;
+      color: #9ca3af;
+      font-size: 12px;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      padding: 7px 10px;
+      border: 1px solid #2a2a34;
+      border-radius: 999px;
+      color: #c4b5fd;
+      background: #16161d;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .workspace {
+      display: grid;
+      gap: 16px;
+    }
+
+    .reel-frame {
+      width: min(100%, 390px);
+      margin: 0 auto;
+      aspect-ratio: 9 / 16;
+      position: relative;
+      overflow: hidden;
+      background: #000;
+      border-radius: 24px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.38);
+    }
+
+    .inner-media {
+      position: absolute;
+      inset: 50% 0 auto 0;
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      transform: translateY(-50%);
+      overflow: hidden;
+      background: #000;
+      isolation: isolate;
+    }
+
+    #auraVideo,
+    #fxCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #auraVideo {
+      z-index: 1;
+      display: block;
+      object-fit: cover;
+      opacity: 1;
+      transform: scale(1.01);
+      will-change: opacity;
+    }
+
+    #fxCanvas {
+      z-index: 2;
+      display: block;
+      pointer-events: none;
+    }
+
+    .player-controls {
+      width: min(100%, 390px);
+      margin: 12px auto 0;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .play-btn {
+      width: 46px;
+      height: 46px;
+      border: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #765cff, #527cff);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .progress {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: #24242d;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #765cff, #527cff);
+    }
+
+    .time {
+      min-width: 72px;
+      text-align: right;
+      color: #a7a7b2;
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hint {
+      width: min(100%, 390px);
+      margin: 10px auto 0;
+      text-align: center;
+      color: #777784;
+      font-size: 11px;
+    }
+
+    .panel {
+      padding: 14px;
+      border: 1px solid #272731;
+      border-radius: 20px;
+      background: #131319;
+    }
+
+    .panel h2 {
+      margin: 0 0 4px;
+      font-size: 16px;
+    }
+
+    .panel-copy {
+      margin: 0 0 14px;
+      color: #9999a5;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .photo-inputs {
+      display: grid;
+      gap: 10px;
+    }
+
+    .photo-input {
+      position: relative;
+      display: grid;
+      grid-template-columns: 46px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      min-height: 64px;
+      padding: 9px 10px;
+      overflow: hidden;
+      border: 1px solid #2a2a34;
+      border-radius: 15px;
+      background: #191920;
+      cursor: pointer;
+    }
+
+    .photo-input input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .thumb {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 11px;
+      background: #24242d;
+      color: #b7b7c2;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .photo-copy strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .photo-copy span {
+      display: block;
+      margin-top: 3px;
+      color: #8e8e99;
+      font-size: 11px;
+    }
+
+    .replace {
+      color: #a99aff;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    @media (min-width: 820px) {
+      .app { padding: 24px; }
+
+      .workspace {
+        grid-template-columns: minmax(360px, 460px) minmax(320px, 1fr);
+        align-items: center;
+        gap: 28px;
+      }
+
+      .reel-frame,
+      .player-controls,
+      .hint {
+        width: 100%;
+      }
+
+      .panel { padding: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="boot-loader" id="bootLoader">
+    <div class="boot-card">
+      <div class="boot-logo">V</div>
+      <div class="boot-title">Loading template</div>
+      <div class="boot-sub">Preparing video, music and effects…</div>
+
+      <div class="boot-track">
+        <div class="boot-fill" id="bootFill"></div>
+      </div>
+
+      <div class="boot-percent" id="bootPercent">0%</div>
+    </div>
+  </div>
+
+  <main class="app" id="app">
+
+    <header class="topbar">
+      <div class="title">
+        <strong>Aura Photo Trend</strong>
+        <span>Template 01 · 3 photos · 9:16</span>
+      </div>
+
+      <div class="badge">FREE · NO WATERMARK</div>
+    </header>
+
+    <section class="workspace">
+
+      <div class="player-column">
+
+        <div class="reel-frame">
+          <div class="inner-media">
+
+            <video
+              id="auraVideo"
+              src="./template1-aura.mp4"
+              muted
+              playsinline
+              preload="auto"
+            ></video>
+
+            <canvas
+              id="fxCanvas"
+              width="540"
+              height="720"
+            ></canvas>
+
+          </div>
+        </div>
+
+        <div class="player-controls">
+
+          <button
+            id="playBtn"
+            class="play-btn"
+            type="button"
+            aria-label="Play template"
+          >
+            ▶
+          </button>
+
+          <div class="progress">
+            <div
+              id="progressFill"
+              class="progress-fill"
+            ></div>
+          </div>
+
+          <div class="time">
+            <span id="currentTime">0:00</span>
+            /
+            <span id="totalTime">0:00</span>
+          </div>
+
+        </div>
+
+        <p class="hint">
+          Play works before uploading anything. PHOTO 1, PHOTO 2 and PHOTO 3 are built into the demo.
+        </p>
+
+      </div>
+
+      <aside class="panel">
+
+        <h2>Replace photos</h2>
+
+        <p class="panel-copy">
+          Add any photos you want. Empty slots keep the demo placeholder.
+        </p>
+
+        <div class="photo-inputs">
+
+          <label class="photo-input">
+            <input id="photoInput1" type="file" accept="image/*">
+
+            <span class="thumb">
+              <span id="thumbText1">1</span>
+              <img id="thumbImage1" alt="">
+            </span>
+
+            <span class="photo-copy">
+              <strong>Photo 1</strong>
+              <span id="fileName1">Demo placeholder</span>
+            </span>
+
+            <span class="replace">Choose</span>
+          </label>
+
+          <label class="photo-input">
+            <input id="photoInput2" type="file" accept="image/*">
+
+            <span class="thumb">
+              <span id="thumbText2">2</span>
+              <img id="thumbImage2" alt="">
+            </span>
+
+            <span class="photo-copy">
+              <strong>Photo 2</strong>
+              <span id="fileName2">Demo placeholder</span>
+            </span>
+
+            <span class="replace">Choose</span>
+          </label>
+
+          <label class="photo-input">
+            <input id="photoInput3" type="file" accept="image/*">
+
+            <span class="thumb">
+              <span id="thumbText3">3</span>
+              <img id="thumbImage3" alt="">
+            </span>
+
+            <span class="photo-copy">
+              <strong>Photo 3</strong>
+              <span id="fileName3">Demo placeholder</span>
+            </span>
+
+            <span class="replace">Choose</span>
+          </label>
+
+        </div>
+
+      </aside>
+
+    </section>
+
+    <audio
+      id="templateMusic"
+      src="./template1-music.mp3"
+      preload="auto"
+    ></audio>
+
+  </main>
+
+  <script>
+    /* =========================================================
+       ELEMENTS
+    ========================================================= */
+
+    const app = document.getElementById("app");
+
+    const bootLoader =
+      document.getElementById("bootLoader");
+
+    const bootFill =
+      document.getElementById("bootFill");
+
+    const bootPercent =
+      document.getElementById("bootPercent");
+
+    const auraVideo =
+      document.getElementById("auraVideo");
+
+    const music =
+      document.getElementById("templateMusic");
+
+    const canvas =
+      document.getElementById("fxCanvas");
+
+    const ctx =
+      canvas.getContext("2d", {
+        alpha: true
+      });
+
+    const playBtn =
+      document.getElementById("playBtn");
+
+    const progressFill =
+      document.getElementById("progressFill");
+
+    const currentTimeEl =
+      document.getElementById("currentTime");
+
+    const totalTimeEl =
+      document.getElementById("totalTime");
+
+
+    /* =========================================================
+       STATE
+    ========================================================= */
+
+    let playing = false;
+    let animationFrame = null;
+    let duration = 13.07;
+
+    let activeScene = "";
+    let currentAuraNumber = 0;
+
+    let auraPrepared = false;
+    let auraPreparing = false;
+    let auraStartedForScene = false;
+
+    const AURA_SAFE_START = 2.0;
+
+    const photoImages = [
+      null,
+      null,
+      null
+    ];
+
+
+    /* =========================================================
+       LOADER 0 -> 100
+    ========================================================= */
+
+    let loadTarget = 0;
+    let loadShown = 0;
+    let loadRaf = null;
+
+    function setLoadTarget(value) {
+      loadTarget =
+        Math.max(
+          loadTarget,
+          Math.min(100, value)
+        );
+
+      if (!loadRaf) {
+        animateLoader();
+      }
+    }
+
+    function animateLoader() {
+      const diff =
+        loadTarget - loadShown;
+
+      if (Math.abs(diff) < 0.25) {
+        loadShown = loadTarget;
+      } else {
+        loadShown +=
+          Math.max(
+            0.35,
+            diff * 0.10
+          );
+      }
+
+      const shown =
+        Math.min(
+          100,
+          Math.round(loadShown)
+        );
+
+      bootFill.style.width =
+        shown + "%";
+
+      bootPercent.textContent =
+        shown + "%";
+
+      if (
+        shown < 100
+        || loadShown < loadTarget
+      ) {
+        loadRaf =
+          requestAnimationFrame(
+            animateLoader
+          );
+      } else {
+        loadRaf = null;
+      }
+    }
+
+    function waitForReady(
+      element,
+      minReadyState,
+      eventName,
+      timeout = 9000
+    ) {
+      return new Promise(resolve => {
+
+        if (
+          typeof element.readyState === "number"
+          && element.readyState >= minReadyState
+        ) {
+          resolve();
+          return;
+        }
+
+        let done = false;
+
+        const finish = () => {
+          if (done) return;
+          done = true;
+
+          element.removeEventListener(
+            eventName,
+            finish
+          );
+
+          resolve();
+        };
+
+        element.addEventListener(
+          eventName,
+          finish,
+          { once: true }
+        );
+
+        setTimeout(
+          finish,
+          timeout
+        );
+
+      });
+    }
+
+    async function bootTemplate() {
+      setLoadTarget(8);
+
+      await Promise.all([
+        waitForReady(
+          auraVideo,
+          1,
+          "loadedmetadata"
+        ),
+        waitForReady(
+          music,
+          1,
+          "loadedmetadata"
+        )
+      ]);
+
+      setLoadTarget(48);
+
+      if (
+        Number.isFinite(music.duration)
+        && music.duration > 0
+      ) {
+        duration = music.duration;
+      }
+
+      totalTimeEl.textContent =
+        formatTime(duration);
+
+      await Promise.all([
+        waitForReady(
+          auraVideo,
+          3,
+          "canplay"
+        ),
+        waitForReady(
+          music,
+          3,
+          "canplay"
+        )
+      ]);
+
+      setLoadTarget(92);
+
+      await new Promise(
+        resolve =>
+          setTimeout(resolve, 180)
+      );
+
+      setLoadTarget(100);
+
+      await new Promise(
+        resolve =>
+          setTimeout(resolve, 260)
+      );
+
+      app.classList.add("is-ready");
+      bootLoader.classList.add("is-done");
+    }
+
+
+    /* =========================================================
+       HELPERS
+    ========================================================= */
+
+    function clamp(value, min = 0, max = 1) {
+      return Math.min(
+        max,
+        Math.max(min, value)
+      );
+    }
+
+    function smoothstep(t) {
+      t = clamp(t);
+      return t * t * (3 - 2 * t);
+    }
+
+    function easeOutExpo(t) {
+      t = clamp(t);
+
+      return t === 1
+        ? 1
+        : 1 - Math.pow(2, -10 * t);
+    }
+
+    function formatTime(seconds) {
+      const safe =
+        Number.isFinite(seconds)
+          ? Math.max(0, seconds)
+          : 0;
+
+      return (
+        Math.floor(safe / 60)
+        +
+        ":"
+        +
+        String(
+          Math.floor(safe % 60)
+        ).padStart(2, "0")
+      );
+    }
+
+    function clearFx() {
+      ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+    }
+
+
+    /* =========================================================
+       PHOTO / PLACEHOLDER DRAWING
+    ========================================================= */
+
+    const placeholderColors = [
+      ["#3a0008", "#8b001b"],
+      ["#402507", "#8d5715"],
+      ["#003b48", "#00758b"]
+    ];
+
+    function drawPlaceholder(index) {
+      const w = canvas.width;
+      const h = canvas.height;
+
+      const colors =
+        placeholderColors[index];
+
+      const gradient =
+        ctx.createLinearGradient(
+          0,
+          0,
+          w,
+          h
+        );
+
+      gradient.addColorStop(
+        0,
+        colors[0]
+      );
+
+      gradient.addColorStop(
+        1,
+        colors[1]
+      );
+
+      ctx.fillStyle = gradient;
+
+      ctx.fillRect(
+        0,
+        0,
+        w,
+        h
+      );
+
+      const vignette =
+        ctx.createRadialGradient(
+          w * 0.5,
+          h * 0.5,
+          h * 0.05,
+          w * 0.5,
+          h * 0.5,
+          h * 0.72
+        );
+
+      vignette.addColorStop(
+        0,
+        "rgba(255,255,255,.04)"
+      );
+
+      vignette.addColorStop(
+        1,
+        "rgba(0,0,0,.32)"
+      );
+
+      ctx.fillStyle = vignette;
+
+      ctx.fillRect(
+        0,
+        0,
+        w,
+        h
+      );
+
+      ctx.fillStyle = "#fff";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      ctx.font =
+        '700 54px Georgia, "Times New Roman", serif';
+
+      ctx.shadowColor =
+        "rgba(0,0,0,.35)";
+
+      ctx.shadowBlur = 8;
+
+      ctx.fillText(
+        "PHOTO " + (index + 1),
+        w / 2,
+        h / 2
+      );
+
+      ctx.shadowBlur = 0;
+    }
+
+    function drawImageCover(image) {
+      const cw = canvas.width;
+      const ch = canvas.height;
+
+      const iw =
+        image.naturalWidth
+        || image.width;
+
+      const ih =
+        image.naturalHeight
+        || image.height;
+
+      const scale =
+        Math.max(
+          cw / iw,
+          ch / ih
+        );
+
+      const dw =
+        iw * scale;
+
+      const dh =
+        ih * scale;
+
+      const dx =
+        (cw - dw) / 2;
+
+      const dy =
+        (ch - dh) / 2;
+
+      ctx.drawImage(
+        image,
+        dx,
+        dy,
+        dw,
+        dh
+      );
+    }
+
+    function drawPhotoSource(index) {
+      const image =
+        photoImages[index];
+
+      if (image) {
+        drawImageCover(image);
+      } else {
+        drawPlaceholder(index);
+      }
+    }
+
+
+    /* =========================================================
+       CAPCUT-LIKE FRAME EFFECT
+       Vertical smear + stretch + blur + flash
+    ========================================================= */
+
+    function drawPhotoPass(
+      index,
+      options = {}
+    ) {
+      const alpha =
+        options.alpha ?? 1;
+
+      const scaleX =
+        options.scaleX ?? 1;
+
+      const scaleY =
+        options.scaleY ?? 1;
+
+      const x =
+        options.x ?? 0;
+
+      const y =
+        options.y ?? 0;
+
+      const blur =
+        options.blur ?? 0;
+
+      const brightness =
+        options.brightness ?? 1;
+
+      const rotation =
+        options.rotation ?? 0;
+
+      ctx.save();
+
+      ctx.globalAlpha =
+        clamp(alpha, 0, 1);
+
+      ctx.translate(
+        canvas.width / 2 + x,
+        canvas.height / 2 + y
+      );
+
+      ctx.rotate(rotation);
+
+      ctx.scale(
+        scaleX,
+        scaleY
+      );
+
+      ctx.translate(
+        -canvas.width / 2,
+        -canvas.height / 2
+      );
+
+      ctx.filter =
+        "blur("
+        + blur.toFixed(2)
+        + "px) brightness("
+        + brightness.toFixed(2)
+        + ")";
+
+      drawPhotoSource(index);
+
+      ctx.restore();
+
+      ctx.filter = "none";
+      ctx.globalAlpha = 1;
+    }
+
+    function drawMotionSmear(
+      index,
+      strength,
+      alpha = 1,
+      direction = 1
+    ) {
+      strength =
+        clamp(strength);
+
+      const passes = 8;
+
+      for (
+        let i = passes;
+        i >= 1;
+        i--
+      ) {
+        const k =
+          i / passes;
+
+        const offset =
+          direction
+          *
+          strength
+          *
+          k
+          *
+          42;
+
+        drawPhotoPass(
+          index,
+          {
+            alpha:
+              alpha
+              *
+              strength
+              *
+              0.07
+              *
+              (1 - k * 0.45),
+
+            scaleX:
+              1
+              -
+              strength
+              *
+              k
+              *
+              0.065,
+
+            scaleY:
+              1
+              +
+              strength
+              *
+              k
+              *
+              0.42,
+
+            y:
+              offset,
+
+            blur:
+              2
+              +
+              strength
+              *
+              10
+              *
+              k,
+
+            brightness:
+              1
+              +
+              strength
+              *
+              0.8
+          }
+        );
+      }
+    }
+
+    function drawFlash(amount) {
+      amount =
+        clamp(amount);
+
+      if (amount <= 0) {
+        return;
+      }
+
+      ctx.save();
+
+      ctx.globalCompositeOperation =
+        "screen";
+
+      ctx.globalAlpha =
+        amount * 0.62;
+
+      const gradient =
+        ctx.createLinearGradient(
+          0,
+          0,
+          canvas.width,
+          0
+        );
+
+      gradient.addColorStop(
+        0,
+        "rgba(255,255,255,0)"
+      );
+
+      gradient.addColorStop(
+        .5,
+        "rgba(255,255,255,.92)"
+      );
+
+      gradient.addColorStop(
+        1,
+        "rgba(255,255,255,0)"
+      );
+
+      ctx.fillStyle = gradient;
+
+      ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+
+      ctx.restore();
+    }
+
+    function renderStablePhoto(
+      index,
+      localProgress
+    ) {
+      clearFx();
+
+      const breathing =
+        Math.sin(
+          localProgress
+          * Math.PI
+        );
+
+      drawPhotoPass(
+        index,
+        {
+          alpha: 1,
+          scaleX: 1.002,
+          scaleY:
+            1.002
+            +
+            breathing * 0.012,
+          y:
+            -breathing * 2.5,
+          blur: 0,
+          brightness: 1
+        }
+      );
+    }
+
+    function renderAuraToPhoto(
+      index,
+      progress
+    ) {
+      clearFx();
+
+      const t =
+        clamp(progress);
+
+      const e =
+        easeOutExpo(t);
+
+      const smear =
+        1 - smoothstep(t);
+
+      const flash =
+        Math.sin(
+          Math.PI
+          *
+          clamp(
+            t * 1.12
+          )
+        );
+
+      auraVideo.style.opacity =
+        String(
+          1
+          -
+          smoothstep(
+            clamp(t * 1.25)
+          )
+        );
+
+      drawMotionSmear(
+        index,
+        smear,
+        e,
+        1
+      );
+
+      drawPhotoPass(
+        index,
+        {
+          alpha: e,
+          scaleX:
+            0.90
+            +
+            e * 0.10,
+
+          scaleY:
+            1.38
+            -
+            e * 0.38,
+
+          y:
+            (1 - e) * 14,
+
+          blur:
+            (1 - e) * 10,
+
+          brightness:
+            1
+            +
+            (1 - e) * 0.42
+        }
+      );
+
+      drawFlash(
+        flash * 0.42
+      );
+    }
+
+    function renderPhotoToPhoto(
+      previousIndex,
+      currentIndex,
+      progress,
+      direction
+    ) {
+      clearFx();
+
+      const t =
+        clamp(progress);
+
+      const e =
+        smoothstep(t);
+
+      const outStrength =
+        e;
+
+      const inStrength =
+        1 - e;
+
+      drawMotionSmear(
+        previousIndex,
+        outStrength,
+        1 - e,
+        -direction
+      );
+
+      drawPhotoPass(
+        previousIndex,
+        {
+          alpha:
+            1 - e,
+
+          scaleX:
+            1
+            -
+            e * 0.055,
+
+          scaleY:
+            1
+            +
+            e * 0.30,
+
+          y:
+            -direction
+            *
+            e
+            *
+            15,
+
+          blur:
+            e * 8,
+
+          brightness:
+            1
+            +
+            e * 0.24
+        }
+      );
+
+      drawMotionSmear(
+        currentIndex,
+        inStrength,
+        e,
+        direction
+      );
+
+      drawPhotoPass(
+        currentIndex,
+        {
+          alpha: e,
+
+          scaleX:
+            0.94
+            +
+            e * 0.06,
+
+          scaleY:
+            1.28
+            -
+            e * 0.28,
+
+          y:
+            direction
+            *
+            (1 - e)
+            *
+            14,
+
+          blur:
+            (1 - e) * 7,
+
+          brightness:
+            1
+            +
+            (1 - e) * 0.22
+        }
+      );
+
+      drawFlash(
+        Math.sin(
+          Math.PI * t
+        )
+        *
+        0.22
+      );
+    }
+
+    function renderPhotoToAura(
+      previousIndex,
+      progress
+    ) {
+      clearFx();
+
+      const t =
+        clamp(progress);
+
+      const e =
+        smoothstep(t);
+
+      auraVideo.style.opacity =
+        String(e);
+
+      drawMotionSmear(
+        previousIndex,
+        e,
+        1 - e,
+        -1
+      );
+
+      drawPhotoPass(
+        previousIndex,
+        {
+          alpha:
+            1 - e,
+
+          scaleX:
+            1
+            -
+            e * 0.07,
+
+          scaleY:
+            1
+            +
+            e * 0.36,
+
+          y:
+            -e * 18,
+
+          blur:
+            e * 10,
+
+          brightness:
+            1
+            +
+            e * 0.28
+        }
+      );
+
+      drawFlash(
+        Math.sin(
+          Math.PI * t
+        )
+        *
+        0.18
+      );
+
+      if (t >= 0.98) {
+        clearFx();
+      }
+    }
+
+
+    /* =========================================================
+       AURA CONTROL
+       One video element, reused 4 times safely.
+    ========================================================= */
+
+    function seekAuraSafe() {
+      if (
+        auraPrepared
+        || auraPreparing
+      ) {
+        return;
+      }
+
+      auraPreparing = true;
+
+      auraVideo.pause();
+      auraVideo.style.opacity = "0";
+
+      const finish = () => {
+        auraPrepared = true;
+        auraPreparing = false;
+
+        auraVideo.removeEventListener(
+          "seeked",
+          finish
+        );
+      };
+
+      auraVideo.addEventListener(
+        "seeked",
+        finish,
+        { once: true }
+      );
+
+      try {
+        auraVideo.currentTime =
+          AURA_SAFE_START;
+      } catch (error) {
+        finish();
+      }
+
+      if (
+        auraVideo.readyState >= 2
+        &&
+        Math.abs(
+          auraVideo.currentTime
+          -
+          AURA_SAFE_START
+        ) < 0.08
+      ) {
+        finish();
+      }
+    }
+
+    function startAuraScene(
+      auraNumber
+    ) {
+      currentAuraNumber =
+        auraNumber;
+
+      auraStartedForScene =
+        false;
+
+      if (auraNumber === 1) {
+        auraPrepared = true;
+
+        try {
+          auraVideo.currentTime = 0;
+        } catch (error) {}
+      }
+    }
+
+    function ensureAuraPlaying() {
+      if (
+        auraStartedForScene
+      ) {
+        return;
+      }
+
+      if (
+        currentAuraNumber > 1
+        &&
+        !auraPrepared
+      ) {
+        return;
+      }
+
+      auraStartedForScene = true;
+
+      auraVideo
+        .play()
+        .catch(() => {});
+    }
+
+
+    /* =========================================================
+       TIMELINE
+       Matched to the reference video.
+    ========================================================= */
+
+    const timeline = [
+      { name: "aura1",  type: "aura",  start: 0.00,  end: 3.80, aura: 1 },
+
+      { name: "p1a",    type: "photo", start: 3.80,  end: 4.70, photo: 0, from: "aura" },
+      { name: "p2a",    type: "photo", start: 4.70,  end: 5.35, photo: 1, fromPhoto: 0, direction: 1 },
+      { name: "p3a",    type: "photo", start: 5.35,  end: 5.95, photo: 2, fromPhoto: 1, direction: -1 },
+
+      { name: "aura2",  type: "aura",  start: 5.95,  end: 6.60, aura: 2, fromPhoto: 2 },
+
+      { name: "p1b",    type: "photo", start: 6.60,  end: 7.40, photo: 0, from: "aura" },
+      { name: "p2b",    type: "photo", start: 7.40,  end: 8.00, photo: 1, fromPhoto: 0, direction: 1 },
+      { name: "p3b",    type: "photo", start: 8.00,  end: 8.60, photo: 2, fromPhoto: 1, direction: -1 },
+
+      { name: "aura3",  type: "aura",  start: 8.60,  end: 9.20, aura: 3, fromPhoto: 2 },
+
+      { name: "p1c",    type: "photo", start: 9.20,  end: 10.00, photo: 0, from: "aura" },
+      { name: "p2c",    type: "photo", start: 10.00, end: 10.60, photo: 1, fromPhoto: 0, direction: 1 },
+      { name: "p3c",    type: "photo", start: 10.60, end: 11.20, photo: 2, fromPhoto: 1, direction: -1 },
+
+      { name: "aura4",  type: "aura",  start: 11.20, end: 11.85, aura: 4, fromPhoto: 2 },
+
+      { name: "black",  type: "black", start: 11.85, end: 99 }
+    ];
+
+    function getScene(time) {
+      return (
+        timeline.find(
+          scene =>
+            time >= scene.start
+            &&
+            time < scene.end
+        )
+        ||
+        timeline[
+          timeline.length - 1
+        ]
+      );
+    }
+
+    function onSceneEnter(scene) {
+      activeScene =
+        scene.name;
+
+      if (
+        scene.type === "aura"
+      ) {
+        startAuraScene(
+          scene.aura
+        );
+
+        return;
+      }
+
+      if (
+        scene.type === "photo"
+        &&
+        scene.from === "aura"
+      ) {
+        /*
+          Keep the last Aura frame alive for the
+          Aura -> Photo transition first.
+          We seek to 2s only after that blend finishes.
+        */
+        auraVideo.pause();
+        auraPrepared = false;
+        auraPreparing = false;
+        auraStartedForScene = false;
+      }
+
+      if (
+        scene.type === "black"
+      ) {
+        auraVideo.pause();
+        auraVideo.style.opacity = "0";
+        clearFx();
+      }
+    }
+
+    function renderScene(time) {
+      const scene =
+        getScene(time);
+
+      if (
+        scene.name !== activeScene
+      ) {
+        onSceneEnter(scene);
+      }
+
+      const sceneDuration =
+        Math.max(
+          0.001,
+          scene.end - scene.start
+        );
+
+      const local =
+        clamp(
+          (time - scene.start)
+          /
+          sceneDuration
+        );
+
+      if (
+        scene.type === "aura"
+      ) {
+        ensureAuraPlaying();
+
+        const transitionDuration =
+          0.22;
+
+        if (
+          scene.fromPhoto !== undefined
+          &&
+          time
+          <
+          scene.start
+          +
+          transitionDuration
+        ) {
+          renderPhotoToAura(
+            scene.fromPhoto,
+            (
+              time - scene.start
+            )
+            /
+            transitionDuration
+          );
+        } else {
+          clearFx();
+
+          auraVideo.style.opacity =
+            "1";
+        }
+
+        return;
+      }
+
+      if (
+        scene.type === "photo"
+      ) {
+        const transitionDuration =
+          scene.from === "aura"
+            ? 0.32
+            : 0.20;
+
+        if (
+          scene.from === "aura"
+        ) {
+          const t =
+            clamp(
+              (
+                time - scene.start
+              )
+              /
+              transitionDuration
+            );
+
+          renderAuraToPhoto(
+            scene.photo,
+            t
+          );
+
+          if (
+            t >= 0.96
+          ) {
+            auraVideo.style.opacity =
+              "0";
+
+            seekAuraSafe();
+          }
+
+          if (t >= 1) {
+            renderStablePhoto(
+              scene.photo,
+              local
+            );
+          }
+
+          return;
+        }
+
+        if (
+          scene.fromPhoto !== undefined
+          &&
+          time
+          <
+          scene.start
+          +
+          transitionDuration
+        ) {
+          renderPhotoToPhoto(
+            scene.fromPhoto,
+            scene.photo,
+            (
+              time - scene.start
+            )
+            /
+            transitionDuration,
+            scene.direction || 1
+          );
+
+          return;
+        }
+
+        renderStablePhoto(
+          scene.photo,
+          local
+        );
+
+        return;
+      }
+
+      auraVideo.pause();
+      auraVideo.style.opacity = "0";
+      clearFx();
+    }
+
+
+    /* =========================================================
+       PLAYBACK
+    ========================================================= */
+
+    function resetPlayback() {
+      playing = false;
+
+      if (animationFrame) {
+        cancelAnimationFrame(
+          animationFrame
+        );
+
+        animationFrame = null;
+      }
+
+      music.pause();
+      auraVideo.pause();
+
+      music.currentTime = 0;
+
+      try {
+        auraVideo.currentTime = 0;
+      } catch (error) {}
+
+      activeScene = "";
+      currentAuraNumber = 0;
+
+      auraPrepared = true;
+      auraPreparing = false;
+      auraStartedForScene = false;
+
+      auraVideo.style.opacity = "1";
+
+      progressFill.style.width =
+        "0%";
+
+      currentTimeEl.textContent =
+        "0:00";
+
+      clearFx();
+    }
+
+    async function startPlayback() {
+      resetPlayback();
+
+      playing = true;
+
+      playBtn.textContent =
+        "❚❚";
+
+      try {
+        await music.play();
+      } catch (error) {
+        playing = false;
+
+        playBtn.textContent =
+          "▶";
+
+        return;
+      }
+
+      renderScene(0);
+
+      previewLoop();
+    }
+
+    function stopPlayback() {
+      playing = false;
+
+      playBtn.textContent =
+        "▶";
+
+      music.pause();
+      auraVideo.pause();
+
+      if (animationFrame) {
+        cancelAnimationFrame(
+          animationFrame
+        );
+
+        animationFrame = null;
+      }
+    }
+
+    function previewLoop() {
+      if (!playing) {
+        return;
+      }
+
+      const time =
+        music.currentTime;
+
+      const progress =
+        Math.min(
+          time / duration,
+          1
+        );
+
+      progressFill.style.width =
+        (progress * 100) + "%";
+
+      currentTimeEl.textContent =
+        formatTime(time);
+
+      renderScene(time);
+
+      if (
+        time >= duration - 0.04
+        ||
+        music.ended
+      ) {
+        music.currentTime = 0;
+
+        activeScene = "";
+        currentAuraNumber = 0;
+
+        auraPrepared = true;
+        auraPreparing = false;
+        auraStartedForScene = false;
+
+        try {
+          auraVideo.currentTime = 0;
+        } catch (error) {}
+
+        auraVideo.pause();
+        auraVideo.style.opacity = "1";
+
+        clearFx();
+
+        music
+          .play()
+          .catch(() => {});
+      }
+
+      animationFrame =
+        requestAnimationFrame(
+          previewLoop
+        );
+    }
+
+    playBtn.addEventListener(
+      "click",
+      () => {
+        if (playing) {
+          stopPlayback();
+        } else {
+          startPlayback();
+        }
+      }
+    );
+
+
+    /* =========================================================
+       PHOTO UPLOADS
+    ========================================================= */
+
+    for (
+      let i = 1;
+      i <= 3;
+      i++
+    ) {
+      const input =
+        document.getElementById(
+          "photoInput" + i
+        );
+
+      const thumbImage =
+        document.getElementById(
+          "thumbImage" + i
+        );
+
+      const thumbText =
+        document.getElementById(
+          "thumbText" + i
+        );
+
+      const fileName =
+        document.getElementById(
+          "fileName" + i
+        );
+
+      input.addEventListener(
+        "change",
+        () => {
+          const file =
+            input.files
+            &&
+            input.files[0];
+
+          if (!file) {
+            return;
+          }
+
+          const objectUrl =
+            URL.createObjectURL(
+              file
+            );
+
+          const image =
+            new Image();
+
+          image.onload = () => {
+            photoImages[
+              i - 1
+            ] = image;
+
+            thumbImage.src =
+              objectUrl;
+
+            thumbImage.style.display =
+              "block";
+
+            thumbText.style.display =
+              "none";
+
+            fileName.textContent =
+              file.name;
+          };
+
+          image.src =
+            objectUrl;
+        }
+      );
+    }
+
+
+    /* =========================================================
+       START
+    ========================================================= */
+
+    resetPlayback();
+    bootTemplate();
+  </script>
+
+</body>
+</html>
